@@ -35,19 +35,29 @@ public class JBangSpringNativeIntegration {
                 generatedSourcesDirectory.toFile().mkdir();
             }
             Path sourcesPath = generatedSourcesDirectory.resolve(Paths.get("src", "main", "java"));
-            List<String> args = new ArrayList<>();
-            args.add("java");
-            args.add("-cp");
-            args.add(classpath);
-            args.add(GenerateBootstrapCommand.class.getCanonicalName());
-            args.add("--sources-out=" + sourcesPath.toAbsolutePath());
-            args.add("--resources-out=" + appClassesDir);
-            args.add("--resources=" + appClassesDir);
-            args.add("--classes=" + appClassesDir);
-            applyAotOptions(args);
+            List<String> generatorCmd = new ArrayList<>();
+            generatorCmd.add("java");
+            generatorCmd.add("-cp");
+            generatorCmd.add(classpath);
+            generatorCmd.add(GenerateBootstrapCommand.class.getCanonicalName());
+            generatorCmd.add("--sources-out=" + sourcesPath.toAbsolutePath());
+            generatorCmd.add("--resources-out=" + appClassesDir);
+            generatorCmd.add("--resources=" + appClassesDir);
+            generatorCmd.add("--classes=" + appClassesDir);
+            final Map<String, String> aotConfig = extractAotConfig(comments);
+            //apply aot options
+            applyAotOptions(generatorCmd, getAotOptions(aotConfig));
+            //set main-class
+            if (aotConfig.containsKey("mainClass")) {
+                generatorCmd.add("--main-class=" + aotConfig.get("mainClass"));
+            }
+            //set application-class
+            if (aotConfig.containsKey("applicationClass")) {
+                generatorCmd.add("--application-class" + aotConfig.get("applicationClass"));
+            }
             // generate source code
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            new ProcessExecutor().command(args)
+            new ProcessExecutor().command(generatorCmd)
                     .redirectOutput(bos)
                     .redirectError(bos)
                     .execute();
@@ -60,19 +70,19 @@ public class JBangSpringNativeIntegration {
                         .collect(Collectors.toList());
                 Files.writeString(sourcesPath.resolve("sources.txt"), String.join(System.lineSeparator(), javaFiles));
             }
-            List<String> compileArgs = new ArrayList<>();
-            compileArgs.add("javac");
-            compileArgs.add("-target");
-            compileArgs.add("11");
-            compileArgs.add("@sources.txt");
-            compileArgs.add("-nowarn");
-            compileArgs.add("-cp");
-            compileArgs.add(classpath);
-            compileArgs.add("-d");
-            compileArgs.add(appClassesDir);
+            List<String> compileCmd = new ArrayList<>();
+            compileCmd.add("javac");
+            compileCmd.add("-target");
+            compileCmd.add("11");
+            compileCmd.add("@sources.txt");
+            compileCmd.add("-nowarn");
+            compileCmd.add("-cp");
+            compileCmd.add(classpath);
+            compileCmd.add("-d");
+            compileCmd.add(appClassesDir);
             // compile spring aot source code
             new ProcessExecutor().directory(new File(sourceFullPath))
-                    .command(compileArgs)
+                    .command(compileCmd)
                     .redirectOutput(bos)
                     .redirectError(bos)
                     .execute();
@@ -88,20 +98,28 @@ public class JBangSpringNativeIntegration {
     }
 
 
-    protected static AotOptions getAotOptions() {
+    protected static AotOptions getAotOptions(Map<String, String> config) {
         AotOptions aotOptions = new AotOptions();
         aotOptions.setMode(Mode.NATIVE.toString());
-        aotOptions.setDebugVerify(false);
-        aotOptions.setVerify(false);
-        aotOptions.setRemoveYamlSupport(true);
-        aotOptions.setRemoveJmxSupport(true);
-        aotOptions.setRemoveXmlSupport(true);
-        aotOptions.setRemoveSpelSupport(true);
+        if (config.containsKey("removeXmlSupport")) {
+            aotOptions.setRemoveXmlSupport(Boolean.parseBoolean(config.get("removeXmlSupport")));
+        }
+        if (config.containsKey("removeSpelSupport")) {
+            aotOptions.setRemoveSpelSupport(Boolean.parseBoolean(config.get("removeSpelSupport")));
+        }
+        if (config.containsKey("removeYamlSupport")) {
+            aotOptions.setRemoveYamlSupport(Boolean.parseBoolean(config.get("removeYamlSupport")));
+        }
+        if (config.containsKey("removeJmxSupport")) {
+            aotOptions.setRemoveJmxSupport(Boolean.parseBoolean(config.get("removeJmxSupport")));
+        }
+        if (config.containsKey("removeXmlSupport")) {
+            aotOptions.setRemoveXmlSupport(Boolean.parseBoolean(config.get("removeXmlSupport")));
+        }
         return aotOptions;
     }
 
-    protected static void applyAotOptions(List<String> args) {
-        AotOptions aotOptions = getAotOptions();
+    protected static void applyAotOptions(List<String> args, AotOptions aotOptions) {
         args.add("--mode=" + aotOptions.toMode());
         if (aotOptions.isRemoveXmlSupport()) {
             args.add("--remove-xml");
@@ -115,6 +133,20 @@ public class JBangSpringNativeIntegration {
         if (aotOptions.isRemoveYamlSupport()) {
             args.add("--remove-yaml");
         }
+    }
+
+    /**
+     * extract AOT config, and format alike //AOT:CONFIG removeXmlSupport=true
+     *
+     * @param comments JBang comments
+     * @return AOT configuration
+     */
+    public static Map<String, String> extractAotConfig(List<String> comments) {
+        return comments.stream()
+                .filter(comment -> comment.startsWith("//AOT:CONFIG "))
+                .map(comment -> comment.substring(comment.indexOf(" ") + 1).trim())
+                .flatMap(pairs -> Arrays.stream(pairs.split("\\s")).map(s -> s.split("=", 2)))
+                .collect(Collectors.toMap(pair -> pair[0], pair -> pair[1]));
     }
 
 }
