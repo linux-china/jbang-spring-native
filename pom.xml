@@ -68,9 +68,20 @@
             <version>${spring-native.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-native-configuration</artifactId>
+            <version>${spring-native.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>zt-exec</artifactId>
             <version>1.12</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
