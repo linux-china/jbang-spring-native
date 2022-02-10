@@ -2,7 +2,7 @@ JBang build integration with Spring Native
 ==========================================
 
 # How to use
-     
+
 * Create JBang script with `org.mvnsearch:jbang-spring-native:2.6.3-SNAPSHOT` DEPS
 
 ```java
@@ -29,10 +29,18 @@ public class Hello implements CommandLineRunner {
     }
 }
 ```
-     
+
 * Execute `jbang --native Hello.java`
+
+# AOT configuration
+
+```
+//AOT:CONFIG removeXmlSupport=true removeSpelSupport=true
+//AOT:CONFIG removeYamlSupport=false
+```
 
 # References
 
 * JBang Build Integration: https://www.jbang.dev/documentation/guide/latest/integration.html
 * Spring Native: https://docs.spring.io/spring-native/docs/0.11.2/reference/htmlsingle/
+* Native Image Build Configuration: https://www.graalvm.org/22.0/reference-manual/native-image/BuildConfiguration/
