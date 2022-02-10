@@ -4,6 +4,10 @@
 build:
   mvn -DskipTests clean package
 
+# dependency tree
+dependencies:
+  mvn dependency:tree -Dscope=compile > dependencies.txt
+
 # install into local maven repository
 install:
   rm -rf ~/.m2/repository/org/mvnsearch/jbang-spring-native
