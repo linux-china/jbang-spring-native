@@ -94,7 +94,7 @@ public class JBangSpringNativeIntegration {
                     .map(Path::toFile)
                     .forEach(File::delete);
         }
-        return new HashMap<>();
+        return Collections.emptyMap();
     }
 
 
