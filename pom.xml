@@ -6,7 +6,7 @@
 
     <groupId>org.mvnsearch</groupId>
     <artifactId>jbang-spring-native</artifactId>
-    <version>2.6.3-SNAPSHOT</version>
+    <version>2.6.3</version>
 
     <name>jbang-spring-native</name>
     <description>JBang build integration with Spring Native</description>
