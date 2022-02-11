@@ -20,3 +20,9 @@ hello: install
 # hello native test
 hello-native: install
   jbang --native --verbose demo/src/hello/Hello.java
+
+dry-run:
+   mvn  -DskipTests -DskipLocalStaging=true -P release clean package
+
+deploy:
+   mvn  -DskipTests -P release clean package deploy
