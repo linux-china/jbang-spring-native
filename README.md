@@ -1,6 +1,8 @@
 JBang build integration with Spring Native
 ==========================================
 
+![JBang Spring Native](./jbang-spring-native.png)
+
 # How to use?
 
 * Install GraalVM with native-image and set up `GRAALVM_HOME` env variable
