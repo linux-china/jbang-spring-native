@@ -25,6 +25,8 @@ public class JBangSpringNativeIntegration {
                                                 boolean nativeImage) throws IOException {
         String appClassesDir = appClasses.toAbsolutePath().toString();
         Path generatedSourcesDirectory = appClasses.resolve("spring-aot-generated-sources");
+        // generate source code
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             List<String> fileDeps = originalDeps.stream().map(entry -> {
                 String filePath = entry.getValue().toAbsolutePath().toString();
@@ -55,8 +57,7 @@ public class JBangSpringNativeIntegration {
             if (aotConfig.containsKey("applicationClass")) {
                 generatorCmd.add("--application-class" + aotConfig.get("applicationClass"));
             }
-            // generate source code
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
             new ProcessExecutor().command(generatorCmd)
                     .redirectOutput(bos)
                     .redirectError(bos)
@@ -72,8 +73,6 @@ public class JBangSpringNativeIntegration {
             }
             List<String> compileCmd = new ArrayList<>();
             compileCmd.add("javac");
-            compileCmd.add("-target");
-            compileCmd.add("11");
             compileCmd.add("@sources.txt");
             compileCmd.add("-nowarn");
             compileCmd.add("-cp");
