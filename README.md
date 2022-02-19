@@ -11,7 +11,7 @@ JBang build integration with Spring Native
 ```java
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //JAVA 11+
-//DEPS org.mvnsearch:jbang-spring-native:2.6.3
+//DEPS org.mvnsearch:jbang-spring-native:2.6.3-1
 
 package hello;
 
