@@ -1,6 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //JAVA 11+
 //DEPS org.mvnsearch:jbang-spring-native:2.6.3-1
+//JAVA_OPTIONS -agentlib:native-image-agent=config-merge-dir=/tmp/native-image-agent
 
 package hello;
 
