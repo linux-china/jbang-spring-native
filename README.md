@@ -6,12 +6,12 @@ JBang build integration with Spring Native
 # How to use?
 
 * Install GraalVM with native-image and set up `GRAALVM_HOME` env variable
-* Create JBang script with `org.mvnsearch:jbang-spring-native:2.6.3-1` DEPS
+* Create JBang script with `org.mvnsearch:jbang-spring-native:2.6.4` DEPS
 
 ```java
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //JAVA 11+
-//DEPS org.mvnsearch:jbang-spring-native:2.6.3-1
+//DEPS org.mvnsearch:jbang-spring-native:2.6.4
 //JAVA_OPTIONS -agentlib:native-image-agent=config-merge-dir=/tmp/native-image-agent
 
 package hello;
