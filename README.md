@@ -46,5 +46,5 @@ public class Hello implements CommandLineRunner {
 # References
 
 * JBang Build Integration: https://www.jbang.dev/documentation/guide/latest/integration.html
-* Spring Native: https://docs.spring.io/spring-native/docs/0.11.2/reference/htmlsingle/
+* Spring Native: https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/
 * Native Image Build Configuration: https://www.graalvm.org/22.0/reference-manual/native-image/BuildConfiguration/
