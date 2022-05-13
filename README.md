@@ -43,6 +43,32 @@ public class Hello implements CommandLineRunner {
 //AOT:CONFIG removeYamlSupport=false
 ```
 
+# Docker image build with jbang-spring-native
+
+Create `Dockerfile` with following code:
+
+```dockerfile
+FROM linuxchina/jbang-action:0.94.0-graal-java17-22.1.0 as builder
+
+ARG mainClass="SpringBootApp.java"
+
+RUN mkdir -p /opt/app/out
+WORKDIR /opt/app
+
+COPY $mainClass /opt/app
+
+RUN jbang export portable --native -O out/main $mainClass
+#RUN upx -7 out/main
+
+FROM paketobuildpacks/run:tiny-cnb
+
+COPY --from=builder /opt/app/out /opt/app/out
+
+ENTRYPOINT ["/opt/app/out/main"]
+```
+
+Then execute `docker build -t your_name/spring-boot-native . ` to create Docker image.
+
 # References
 
 * JBang Build Integration: https://www.jbang.dev/documentation/guide/latest/integration.html
