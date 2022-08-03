@@ -48,7 +48,7 @@ public class Hello implements CommandLineRunner {
 Create `Dockerfile` with following code:
 
 ```dockerfile
-FROM linuxchina/jbang-action:0.94.0-graal-java17-22.1.0 as builder
+FROM linuxchina/jbang-action:0.96.0-graal-java17-22.2.0 as builder
 
 ARG mainClass="SpringBootApp.java"
 
@@ -67,10 +67,11 @@ COPY --from=builder /opt/app/out /opt/app/out
 ENTRYPOINT ["/opt/app/out/main"]
 ```
 
-Then execute `docker build -t your_name/spring-boot-native . ` to create Docker image.
+Then execute `docker build -t your_name/spring-boot-native .` to create Docker image.
 
 # References
 
 * JBang Build Integration: https://www.jbang.dev/documentation/guide/latest/integration.html
 * Spring Native: https://docs.spring.io/spring-native/docs/0.12.0/reference/htmlsingle/
 * Native Image Build Configuration: https://www.graalvm.org/22.1/reference-manual/native-image/BuildConfiguration/
+* Spring Boot 3 aot: https://github.com/spring-projects/spring-boot/blob/v3.0.0-M4/spring-boot-project/spring-boot-tools/spring-boot-maven-plugin/src/main/java/org/springframework/boot/maven/AotGenerateMojo.java
